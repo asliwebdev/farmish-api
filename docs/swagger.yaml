@@ -1,0 +1,534 @@
+definitions:
+  models.CreateFarmRequest:
+    properties:
+      location:
+        type: string
+      name:
+        type: string
+      owner_id:
+        type: string
+    required:
+    - location
+    - name
+    - owner_id
+    type: object
+  models.CreateFarmResponse:
+    properties:
+      farm:
+        $ref: '#/definitions/models.Farm'
+      message:
+        type: string
+    type: object
+  models.ErrResp:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Farm:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      owner_id:
+        type: string
+    required:
+    - location
+    - name
+    - owner_id
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.LoginResponse:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.MessageResp:
+    properties:
+      message:
+        type: string
+    type: object
+  models.SignUpRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone_number:
+        minLength: 9
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - phone_number
+    type: object
+  models.SignUpResponse:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.UpdateFarmRequest:
+    properties:
+      id:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      owner_id:
+        type: string
+    required:
+    - id
+    - location
+    - name
+    - owner_id
+    type: object
+  models.UpdateFarmResp:
+    properties:
+      farm:
+        $ref: '#/definitions/models.UpdateFarmRequest'
+      message:
+        type: string
+    type: object
+  models.UpdateUser:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        minLength: 9
+        type: string
+    required:
+    - email
+    - name
+    - phone_number
+    type: object
+  models.UpdateUserResp:
+    properties:
+      message:
+        type: string
+      user:
+        $ref: '#/definitions/models.UpdateUser'
+    type: object
+  models.UpdateUserSwag:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        minLength: 9
+        type: string
+    required:
+    - email
+    - name
+    - phone_number
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone_number:
+        minLength: 9
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - phone_number
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Testing Swagger APIs.
+  title: Farmish API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user using their email and password.
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login response with token and user ID
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Invalid input format or missing fields
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "401":
+          description: Invalid email or password
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      summary: User login
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account.
+      parameters:
+      - description: Sign-up details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.SignUpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "409":
+          description: Email exist
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      summary: User sign-up
+      tags:
+      - auth
+  /farms:
+    get:
+      description: Retrieve a list of all existing farms.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of farms
+          schema:
+            items:
+              $ref: '#/definitions/models.Farm'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get all farms
+      tags:
+      - farms
+    post:
+      consumes:
+      - application/json
+      description: Create Farm for owner.
+      parameters:
+      - description: Request body for creating a farm
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateFarmRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CreateFarmResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create Farm
+      tags:
+      - farms
+  /farms/{id}:
+    delete:
+      description: Delete a farm by their UUID.
+      parameters:
+      - description: Farm ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Farm deleted successfully
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Invalid Farm ID format
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete a farm
+      tags:
+      - farms
+    get:
+      description: Retrieve farm details by their UUID.
+      parameters:
+      - description: Farm ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Farm details
+          schema:
+            $ref: '#/definitions/models.Farm'
+        "400":
+          description: Invalid farm ID format
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Farm not found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get a farm by ID
+      tags:
+      - farms
+    put:
+      consumes:
+      - application/json
+      description: Update details of a farm by their UUID.
+      parameters:
+      - description: Farm ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Farm update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateFarmRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Farm updated successfully
+          schema:
+            $ref: '#/definitions/models.UpdateFarmResp'
+        "400":
+          description: Invalid input or ID format
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update a farm
+      tags:
+      - farms
+  /users:
+    get:
+      description: Retrieve a list of all registered users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      description: Delete a user by their UUID.
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Invalid user ID format
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      description: Retrieve user details by their UUID.
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User details
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Invalid user ID format
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update details of a user by their UUID.
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User update payload, provide password only if it is updated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserSwag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            $ref: '#/definitions/models.UpdateUserResp'
+        "400":
+          description: Invalid input or user ID format
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update a user
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

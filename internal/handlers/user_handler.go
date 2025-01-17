@@ -65,7 +65,7 @@ func (h *Handler) GetAllUsers(ctx *gin.Context) {
 // @Accept			application/json
 // @Produce		application/json
 // @Param			id		path		string			true	"User ID (UUID)"
-// @Param			request	body		models.UpdateUserSwag	true	"User update payload, provide password only it is updated"
+// @Param			request	body		models.UpdateUserSwag	true	"User update payload, provide password only if it is updated"
 // @Success		200		{object}	models.UpdateUserResp			"User updated successfully"
 // @Failure		400		{object}	models.ErrResp	"Invalid input or user ID format"
 // @Failure		500		{object}	models.ErrResp	"Internal server error"

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	_ "farmish/docs"
 	"farmish/internal/services"
 	"farmish/pkg/middleware"
 
@@ -11,11 +12,13 @@ import (
 
 type Handler struct {
 	userService *services.UserService
+	farmService *services.FarmService
 }
 
-func NewHandler(userService *services.UserService) *Handler {
+func NewHandler(userService *services.UserService, farmService *services.FarmService) *Handler {
 	return &Handler{
 		userService: userService,
+		farmService: farmService,
 	}
 }
 
@@ -55,6 +58,16 @@ func Run(h *Handler) *gin.Engine {
 		userRoutes.GET("/:id", h.GetUserByID)
 		userRoutes.PUT("/:id", h.UpdateUser)
 		userRoutes.DELETE("/:id", h.DeleteUser)
+	}
+
+	// FARM ROUTES
+	farmRoutes := router.Group("/farms")
+	{
+		farmRoutes.POST("/", h.CreateFarm)
+		farmRoutes.GET("/:id", h.GetFarmByID)
+		farmRoutes.GET("/", h.GetAllFarms)
+		farmRoutes.PUT("/:id", h.UpdateFarm)
+		farmRoutes.DELETE("/:id", h.DeleteFarm)
 	}
 
 	return router
