@@ -17,8 +17,9 @@ func main() {
 
 	userService := services.NewUserService(repository.NewUserRepository(db))
 	farmService := services.NewFarmService(repository.NewFarmRepository(db))
+	animalService := services.NewAnimalService(repository.NewAnimalRepository(db))
 
-	h := handlers.NewHandler(userService, farmService)
+	h := handlers.NewHandler(userService, farmService, animalService)
 
 	r := handlers.Run(h)
 

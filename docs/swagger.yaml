@@ -1,4 +1,80 @@
 definitions:
+  models.Animal:
+    properties:
+      created_at:
+        type: string
+      date_of_birth:
+        type: string
+      farm_id:
+        type: string
+      health_status:
+        type: string
+      id:
+        type: string
+      last_fed:
+        type: string
+      last_watered:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      weight:
+        type: number
+    required:
+    - farm_id
+    - type
+    - weight
+    type: object
+  models.AnimalWithoutTime:
+    properties:
+      date_of_birth:
+        type: string
+      farm_id:
+        type: string
+      health_status:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      weight:
+        type: number
+    required:
+    - farm_id
+    - type
+    - weight
+    type: object
+  models.CreateAnimalReq:
+    properties:
+      date_of_birth:
+        type: string
+      farm_id:
+        type: string
+      health_status:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      weight:
+        type: number
+    required:
+    - farm_id
+    - type
+    - weight
+    type: object
+  models.CreateAnimalResp:
+    properties:
+      animal:
+        $ref: '#/definitions/models.AnimalWithoutTime'
+      message:
+        type: string
+    type: object
   models.CreateFarmRequest:
     properties:
       location:
@@ -89,6 +165,39 @@ definitions:
       token:
         type: string
       user_id:
+        type: string
+    type: object
+  models.UpdateAnimalReq:
+    properties:
+      date_of_birth:
+        type: string
+      health_status:
+        type: string
+      id:
+        type: string
+      last_fed:
+        type: string
+      last_watered:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      weight:
+        type: number
+    required:
+    - health_status
+    - id
+    - last_fed
+    - last_watered
+    - type
+    - weight
+    type: object
+  models.UpdateAnimalResp:
+    properties:
+      animal:
+        $ref: '#/definitions/models.UpdateAnimalReq'
+      message:
         type: string
     type: object
   models.UpdateFarmRequest:
@@ -187,6 +296,156 @@ info:
   title: Farmish API
   version: "1.0"
 paths:
+  /animals:
+    get:
+      description: Retrieve a list of animals for a specific farm
+      parameters:
+      - description: Farm ID
+        in: query
+        name: farm_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Animal'
+            type: array
+        "400":
+          description: Invalid farm ID
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get animals by farm ID
+      tags:
+      - animals
+    post:
+      consumes:
+      - application/json
+      description: Add a new animal to a farm
+      parameters:
+      - description: Animal data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateAnimalReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CreateAnimalResp'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create a new animal
+      tags:
+      - animals
+    put:
+      consumes:
+      - application/json
+      description: Modify details of an existing animal
+      parameters:
+      - description: Updated animal data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateAnimalReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UpdateAnimalResp'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update an animal
+      tags:
+      - animals
+  /animals/{id}:
+    delete:
+      description: Remove an animal from the system
+      parameters:
+      - description: Animal ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Animal deleted successfully
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete an animal
+      tags:
+      - animals
+    get:
+      description: Retrieve details of an animal using its unique ID
+      parameters:
+      - description: Animal ID(UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Animal'
+        "400":
+          description: Invalid animal ID
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Animal not found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get an animal by ID
+      tags:
+      - animals
   /auth/login:
     post:
       consumes:

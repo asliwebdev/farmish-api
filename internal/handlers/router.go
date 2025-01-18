@@ -11,14 +11,16 @@ import (
 )
 
 type Handler struct {
-	userService *services.UserService
-	farmService *services.FarmService
+	userService   *services.UserService
+	farmService   *services.FarmService
+	animalService *services.AnimalService
 }
 
-func NewHandler(userService *services.UserService, farmService *services.FarmService) *Handler {
+func NewHandler(userService *services.UserService, farmService *services.FarmService, animalService *services.AnimalService) *Handler {
 	return &Handler{
-		userService: userService,
-		farmService: farmService,
+		userService:   userService,
+		farmService:   farmService,
+		animalService: animalService,
 	}
 }
 
@@ -68,6 +70,16 @@ func Run(h *Handler) *gin.Engine {
 		farmRoutes.GET("/", h.GetAllFarms)
 		farmRoutes.PUT("/:id", h.UpdateFarm)
 		farmRoutes.DELETE("/:id", h.DeleteFarm)
+	}
+
+	// ANIMAL ROUTES
+	animalRoutes := router.Group("/animals")
+	{
+		animalRoutes.POST("/", h.CreateAnimal)
+		animalRoutes.GET("/:id", h.GetAnimalByID)
+		animalRoutes.GET("/", h.GetAnimalsByFarmID)
+		animalRoutes.PUT("/", h.UpdateAnimal)
+		animalRoutes.DELETE("/:id", h.DeleteAnimal)
 	}
 
 	return router

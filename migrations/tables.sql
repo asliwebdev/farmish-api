@@ -23,8 +23,8 @@ CREATE TABLE animals (
     weight FLOAT CHECK (weight > 0),
     health_status VARCHAR(50) DEFAULT 'Healthy',
     date_of_birth DATE,
-    last_fed TIMESTAMP,
-    last_watered TIMESTAMP,
+    last_fed TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_watered TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
