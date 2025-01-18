@@ -595,6 +595,253 @@ const docTemplate = `{
                 }
             }
         },
+        "/foods": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update an existing food item in the warehouse",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "foods"
+                ],
+                "summary": "Update a food item in the warehouse",
+                "parameters": [
+                    {
+                        "description": "Warehouse Food",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateFoodReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateFoodResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new food item and associate it with a specific farm",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "foods"
+                ],
+                "summary": "Create a food item and add it to the warehouse",
+                "parameters": [
+                    {
+                        "description": "Warehouse Food",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.AddFoodReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.AddFoodResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/foods/food/{food_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve details of a food using its unique ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "foods"
+                ],
+                "summary": "Get a food by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Food ID(UUID)",
+                        "name": "food_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Food"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid food ID",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Food not found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/foods/{farm_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve all foods associated with a specific farm",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "foods"
+                ],
+                "summary": "Get all food items for a specific farm",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Farm ID",
+                        "name": "farm_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Food"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/foods/{food_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a food item from the warehouse",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "foods"
+                ],
+                "summary": "Remove a food item from the warehouse",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Food ID",
+                        "name": "food_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [
@@ -789,6 +1036,51 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.AddFoodReq": {
+            "type": "object",
+            "required": [
+                "farm_id",
+                "min_threshold",
+                "name",
+                "quantity",
+                "suitable_for",
+                "unit_of_measure"
+            ],
+            "properties": {
+                "farm_id": {
+                    "type": "string"
+                },
+                "min_threshold": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "suitable_for": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit_of_measure": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.AddFoodResp": {
+            "type": "object",
+            "properties": {
+                "food": {
+                    "$ref": "#/definitions/models.FoodWithoutTime"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Animal": {
             "type": "object",
             "required": [
@@ -965,6 +1257,86 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Food": {
+            "type": "object",
+            "required": [
+                "farm_id",
+                "min_threshold",
+                "name",
+                "quantity",
+                "suitable_for",
+                "unit_of_measure"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "farm_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "min_threshold": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "suitable_for": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit_of_measure": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.FoodWithoutTime": {
+            "type": "object",
+            "required": [
+                "farm_id",
+                "min_threshold",
+                "name",
+                "quantity",
+                "suitable_for",
+                "unit_of_measure"
+            ],
+            "properties": {
+                "farm_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "min_threshold": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "suitable_for": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit_of_measure": {
+                    "type": "string"
+                }
+            }
+        },
         "models.LoginRequest": {
             "type": "object",
             "required": [
@@ -1115,6 +1487,55 @@ const docTemplate = `{
             "properties": {
                 "farm": {
                     "$ref": "#/definitions/models.UpdateFarmRequest"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateFoodReq": {
+            "type": "object",
+            "required": [
+                "farm_id",
+                "id",
+                "min_threshold",
+                "name",
+                "quantity",
+                "suitable_for",
+                "unit_of_measure"
+            ],
+            "properties": {
+                "farm_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "min_threshold": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "suitable_for": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit_of_measure": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateFoodResp": {
+            "type": "object",
+            "properties": {
+                "food": {
+                    "$ref": "#/definitions/models.UpdateFoodReq"
                 },
                 "message": {
                     "type": "string"

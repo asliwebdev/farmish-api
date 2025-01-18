@@ -31,40 +31,27 @@ CREATE TABLE animals (
 
 CREATE TABLE foods (
     id UUID PRIMARY KEY,
+    farm_id UUID REFERENCES farms(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     suitable_for TEXT[] NOT NULL,
     unit_of_measure VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE warehouse_foods (
-    id UUID PRIMARY KEY,
-    farm_id UUID REFERENCES farms(id) ON DELETE CASCADE,
-    food_id UUID REFERENCES foods(id) ON DELETE CASCADE,
     quantity FLOAT CHECK (quantity >= 0),
     min_threshold FLOAT CHECK (min_threshold >= 0),
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE (farm_id, food_id)
 );
 
 CREATE TABLE medicines (
     id UUID PRIMARY KEY,
+    farm_id UUID REFERENCES farms(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     suitable_for TEXT[] NOT NULL,
     unit_of_measure VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE warehouse_medicines (
-    id UUID PRIMARY KEY,
-    farm_id UUID REFERENCES farms(id) ON DELETE CASCADE,
-    medicine_id UUID REFERENCES medicines(id) ON DELETE CASCADE,
     quantity FLOAT CHECK (quantity >= 0),
     min_threshold FLOAT CHECK (min_threshold >= 0),
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE (farm_id, medicine_id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE feeding_records (

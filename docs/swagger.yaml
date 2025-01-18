@@ -1,4 +1,35 @@
 definitions:
+  models.AddFoodReq:
+    properties:
+      farm_id:
+        type: string
+      min_threshold:
+        type: number
+      name:
+        type: string
+      quantity:
+        type: number
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
+    required:
+    - farm_id
+    - min_threshold
+    - name
+    - quantity
+    - suitable_for
+    - unit_of_measure
+    type: object
+  models.AddFoodResp:
+    properties:
+      food:
+        $ref: '#/definitions/models.FoodWithoutTime'
+      message:
+        type: string
+    type: object
   models.Animal:
     properties:
       created_at:
@@ -117,6 +148,62 @@ definitions:
     - name
     - owner_id
     type: object
+  models.Food:
+    properties:
+      created_at:
+        type: string
+      farm_id:
+        type: string
+      id:
+        type: string
+      min_threshold:
+        type: number
+      name:
+        type: string
+      quantity:
+        type: number
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - farm_id
+    - min_threshold
+    - name
+    - quantity
+    - suitable_for
+    - unit_of_measure
+    type: object
+  models.FoodWithoutTime:
+    properties:
+      farm_id:
+        type: string
+      id:
+        type: string
+      min_threshold:
+        type: number
+      name:
+        type: string
+      quantity:
+        type: number
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
+    required:
+    - farm_id
+    - min_threshold
+    - name
+    - quantity
+    - suitable_for
+    - unit_of_measure
+    type: object
   models.LoginRequest:
     properties:
       email:
@@ -220,6 +307,40 @@ definitions:
     properties:
       farm:
         $ref: '#/definitions/models.UpdateFarmRequest'
+      message:
+        type: string
+    type: object
+  models.UpdateFoodReq:
+    properties:
+      farm_id:
+        type: string
+      id:
+        type: string
+      min_threshold:
+        type: number
+      name:
+        type: string
+      quantity:
+        type: number
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
+    required:
+    - farm_id
+    - id
+    - min_threshold
+    - name
+    - quantity
+    - suitable_for
+    - unit_of_measure
+    type: object
+  models.UpdateFoodResp:
+    properties:
+      food:
+        $ref: '#/definitions/models.UpdateFoodReq'
       message:
         type: string
     type: object
@@ -663,6 +784,162 @@ paths:
       summary: Update a farm
       tags:
       - farms
+  /foods:
+    post:
+      consumes:
+      - application/json
+      description: Create a new food item and associate it with a specific farm
+      parameters:
+      - description: Warehouse Food
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddFoodReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.AddFoodResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create a food item and add it to the warehouse
+      tags:
+      - foods
+    put:
+      consumes:
+      - application/json
+      description: Update an existing food item in the warehouse
+      parameters:
+      - description: Warehouse Food
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateFoodReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UpdateFoodResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update a food item in the warehouse
+      tags:
+      - foods
+  /foods/{farm_id}:
+    get:
+      description: Retrieve all foods associated with a specific farm
+      parameters:
+      - description: Farm ID
+        in: path
+        name: farm_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Food'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get all food items for a specific farm
+      tags:
+      - foods
+  /foods/{food_id}:
+    delete:
+      description: Delete a food item from the warehouse
+      parameters:
+      - description: Food ID
+        in: path
+        name: food_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Remove a food item from the warehouse
+      tags:
+      - foods
+  /foods/food/{food_id}:
+    get:
+      description: Retrieve details of a food using its unique ID
+      parameters:
+      - description: Food ID(UUID)
+        in: path
+        name: food_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Food'
+        "400":
+          description: Invalid food ID
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Food not found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get a food by ID
+      tags:
+      - foods
   /users:
     get:
       description: Retrieve a list of all registered users.
