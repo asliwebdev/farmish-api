@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"farmish/internal/models"
+	"farmish/internal/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,11 @@ func (h *Handler) CreateAnimal(c *gin.Context) {
 	}
 
 	if err := h.animalService.CreateAnimal(&animal); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		if err == services.ErrNegativeWeight {
+			c.JSON(http.StatusBadRequest, gin.H{"error": services.ErrNegativeWeight})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 		return
 	}
 
@@ -117,7 +122,11 @@ func (h *Handler) UpdateAnimal(c *gin.Context) {
 	}
 
 	if err := h.animalService.UpdateAnimal(&animal); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		if err == services.ErrNegativeWeight {
+			c.JSON(http.StatusBadRequest, gin.H{"error": services.ErrNegativeWeight})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 		return
 	}
 

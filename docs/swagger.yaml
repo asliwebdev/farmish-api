@@ -222,6 +222,93 @@ definitions:
       user_id:
         type: string
     type: object
+  models.Medicine:
+    properties:
+      created_at:
+        type: string
+      farm_id:
+        type: string
+      id:
+        type: string
+      min_threshold:
+        type: number
+      name:
+        type: string
+      quantity:
+        type: number
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - farm_id
+    - min_threshold
+    - name
+    - quantity
+    - suitable_for
+    - unit_of_measure
+    type: object
+  models.MedicineReq:
+    properties:
+      farm_id:
+        type: string
+      min_threshold:
+        type: number
+      name:
+        type: string
+      quantity:
+        type: number
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
+    required:
+    - farm_id
+    - min_threshold
+    - name
+    - quantity
+    - suitable_for
+    - unit_of_measure
+    type: object
+  models.MedicineResp:
+    properties:
+      medicine:
+        $ref: '#/definitions/models.MedicineWithoutTime'
+      message:
+        type: string
+    type: object
+  models.MedicineWithoutTime:
+    properties:
+      farm_id:
+        type: string
+      id:
+        type: string
+      min_threshold:
+        type: number
+      name:
+        type: string
+      quantity:
+        type: number
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
+    required:
+    - farm_id
+    - min_threshold
+    - name
+    - quantity
+    - suitable_for
+    - unit_of_measure
+    type: object
   models.MessageResp:
     properties:
       message:
@@ -940,6 +1027,167 @@ paths:
       summary: Get a food by ID
       tags:
       - foods
+  /medicines:
+    get:
+      description: Retrieve all medicines for a specific farm
+      parameters:
+      - description: Farm ID
+        in: query
+        name: farm_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Medicine'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get all medicines
+      tags:
+      - medicines
+    post:
+      consumes:
+      - application/json
+      description: Add a new medicine to the farm
+      parameters:
+      - description: Medicine Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.MedicineReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.MedicineResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create a new medicine
+      tags:
+      - medicines
+  /medicines/{id}:
+    delete:
+      description: Remove a specific medicine by its ID
+      parameters:
+      - description: Medicine ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete a medicine
+      tags:
+      - medicines
+    get:
+      description: Retrieve a specific medicine by its ID
+      parameters:
+      - description: Medicine ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Medicine'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get a medicine by ID
+      tags:
+      - medicines
+    put:
+      consumes:
+      - application/json
+      description: Update details of a specific medicine
+      parameters:
+      - description: Medicine ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated Medicine Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.MedicineReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MedicineResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update an existing medicine
+      tags:
+      - medicines
   /users:
     get:
       description: Retrieve a list of all registered users.

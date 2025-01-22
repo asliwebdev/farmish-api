@@ -11,18 +11,20 @@ import (
 )
 
 type Handler struct {
-	userService   *services.UserService
-	farmService   *services.FarmService
-	animalService *services.AnimalService
-	foodService   *services.FoodService
+	userService     *services.UserService
+	farmService     *services.FarmService
+	animalService   *services.AnimalService
+	foodService     *services.FoodService
+	medicineService *services.MedicineService
 }
 
-func NewHandler(userService *services.UserService, farmService *services.FarmService, animalService *services.AnimalService, foodService *services.FoodService) *Handler {
+func NewHandler(userService *services.UserService, farmService *services.FarmService, animalService *services.AnimalService, foodService *services.FoodService, medicineService *services.MedicineService) *Handler {
 	return &Handler{
-		userService:   userService,
-		farmService:   farmService,
-		animalService: animalService,
-		foodService:   foodService,
+		userService:     userService,
+		farmService:     farmService,
+		animalService:   animalService,
+		foodService:     foodService,
+		medicineService: medicineService,
 	}
 }
 
@@ -92,6 +94,16 @@ func Run(h *Handler) *gin.Engine {
 		foodRoutes.GET("/food/:food_id", h.GetFoodByID)
 		foodRoutes.PUT("/", h.UpdateWarehouseFood)
 		foodRoutes.DELETE("/:food_id", h.RemoveWarehouseFood)
+	}
+
+	// MEDICINE ROUTES
+	medicineRoutes := router.Group("/medicines")
+	{
+		medicineRoutes.POST("/", h.CreateMedicine)
+		medicineRoutes.GET("/", h.GetAllMedicines)
+		medicineRoutes.GET("/:id", h.GetMedicineByID)
+		medicineRoutes.PUT("/:id", h.UpdateMedicine)
+		medicineRoutes.DELETE("/:id", h.DeleteMedicine)
 	}
 
 	return router
