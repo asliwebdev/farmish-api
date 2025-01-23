@@ -595,6 +595,271 @@ const docTemplate = `{
                 }
             }
         },
+        "/feeding_records": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeding_records"
+                ],
+                "summary": "Create a new feeding record",
+                "parameters": [
+                    {
+                        "description": "Feeding Record request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.FeedingRecordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.FeedingRecordResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/feeding_records/animal/{animal_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeding_records"
+                ],
+                "summary": "Get all feeding records for a specific animal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Animal ID",
+                        "name": "animal_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.FeedingRecordDetailed"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/feeding_records/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeding_records"
+                ],
+                "summary": "Get a feeding record by its ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Feeding Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.FeedingRecordDetailed"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeding_records"
+                ],
+                "summary": "Update a feeding record by its ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Feeding Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Feeding Record Input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateFeedRecordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeding_records"
+                ],
+                "summary": "Delete a feeding record by its ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Feeding Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/foods": {
             "put": {
                 "security": [
@@ -1377,6 +1642,26 @@ const docTemplate = `{
                 }
             }
         },
+        "models.AnimalDetail": {
+            "type": "object",
+            "properties": {
+                "health_status": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "weight": {
+                    "type": "number"
+                }
+            }
+        },
         "models.AnimalWithoutTime": {
             "type": "object",
             "required": [
@@ -1510,6 +1795,100 @@ const docTemplate = `{
                 }
             }
         },
+        "models.FeedingRecordDetailed": {
+            "type": "object",
+            "properties": {
+                "animal": {
+                    "$ref": "#/definitions/models.AnimalDetail"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "fed_at": {
+                    "type": "string"
+                },
+                "feeding_record_id": {
+                    "type": "string"
+                },
+                "food": {
+                    "$ref": "#/definitions/models.FoodDetail"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.FeedingRecordReq": {
+            "type": "object",
+            "required": [
+                "animal_id",
+                "fed_at",
+                "food_id",
+                "quantity"
+            ],
+            "properties": {
+                "animal_id": {
+                    "type": "string"
+                },
+                "fed_at": {
+                    "type": "string"
+                },
+                "food_id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "quantity": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.FeedingRecordResp": {
+            "type": "object",
+            "properties": {
+                "feeding_record": {
+                    "$ref": "#/definitions/models.FeedingRecordWithoutTime"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.FeedingRecordWithoutTime": {
+            "type": "object",
+            "required": [
+                "animal_id",
+                "fed_at",
+                "food_id",
+                "quantity"
+            ],
+            "properties": {
+                "animal_id": {
+                    "type": "string"
+                },
+                "fed_at": {
+                    "type": "string"
+                },
+                "food_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "quantity": {
+                    "type": "number"
+                }
+            }
+        },
         "models.Food": {
             "type": "object",
             "required": [
@@ -1549,6 +1928,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.FoodDetail": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "suitable_for": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit_of_measure": {
                     "type": "string"
                 }
             }
@@ -1868,6 +2267,25 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "models.UpdateFeedRecordReq": {
+            "type": "object",
+            "required": [
+                "fed_at",
+                "quantity"
+            ],
+            "properties": {
+                "fed_at": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "quantity": {
+                    "type": "number"
                 }
             }
         },

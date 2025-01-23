@@ -11,20 +11,26 @@ import (
 )
 
 type Handler struct {
-	userService     *services.UserService
-	farmService     *services.FarmService
-	animalService   *services.AnimalService
-	foodService     *services.FoodService
-	medicineService *services.MedicineService
+	userService          *services.UserService
+	farmService          *services.FarmService
+	animalService        *services.AnimalService
+	foodService          *services.FoodService
+	medicineService      *services.MedicineService
+	feedingRecordService *services.FeedingRecordService
 }
 
-func NewHandler(userService *services.UserService, farmService *services.FarmService, animalService *services.AnimalService, foodService *services.FoodService, medicineService *services.MedicineService) *Handler {
+func NewHandler(userService *services.UserService, farmService *services.FarmService,
+	animalService *services.AnimalService,
+	foodService *services.FoodService, medicineService *services.MedicineService,
+	feedingRecordService *services.FeedingRecordService,
+) *Handler {
 	return &Handler{
-		userService:     userService,
-		farmService:     farmService,
-		animalService:   animalService,
-		foodService:     foodService,
-		medicineService: medicineService,
+		userService:          userService,
+		farmService:          farmService,
+		animalService:        animalService,
+		foodService:          foodService,
+		medicineService:      medicineService,
+		feedingRecordService: feedingRecordService,
 	}
 }
 
@@ -104,6 +110,16 @@ func Run(h *Handler) *gin.Engine {
 		medicineRoutes.GET("/:id", h.GetMedicineByID)
 		medicineRoutes.PUT("/:id", h.UpdateMedicine)
 		medicineRoutes.DELETE("/:id", h.DeleteMedicine)
+	}
+
+	// FEEDING-RECORD ROUTES
+	feedingRecordRoutes := router.Group("/feeding_records")
+	{
+		feedingRecordRoutes.POST("/", h.CreateFeedingRecord)
+		feedingRecordRoutes.GET("/:id", h.GetFeedingRecordByID)
+		feedingRecordRoutes.GET("/animal/:animal_id", h.GetFeedingRecordsByAnimalID)
+		feedingRecordRoutes.PUT("/:id", h.UpdateFeedingRecord)
+		feedingRecordRoutes.DELETE("/:id", h.DeleteFeedingRecord)
 	}
 
 	return router

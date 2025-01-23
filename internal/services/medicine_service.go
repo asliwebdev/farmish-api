@@ -10,10 +10,10 @@ import (
 )
 
 type MedicineService struct {
-	repo repository.MedicineRepository
+	repo *repository.MedicineRepository
 }
 
-func NewMedicineService(repo repository.MedicineRepository) *MedicineService {
+func NewMedicineService(repo *repository.MedicineRepository) *MedicineService {
 	return &MedicineService{repo: repo}
 }
 

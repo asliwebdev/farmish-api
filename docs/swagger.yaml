@@ -59,6 +59,19 @@ definitions:
     - type
     - weight
     type: object
+  models.AnimalDetail:
+    properties:
+      health_status:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      weight:
+        type: number
+    type: object
   models.AnimalWithoutTime:
     properties:
       date_of_birth:
@@ -148,6 +161,70 @@ definitions:
     - name
     - owner_id
     type: object
+  models.FeedingRecordDetailed:
+    properties:
+      animal:
+        $ref: '#/definitions/models.AnimalDetail'
+      created_at:
+        type: string
+      fed_at:
+        type: string
+      feeding_record_id:
+        type: string
+      food:
+        $ref: '#/definitions/models.FoodDetail'
+      notes:
+        type: string
+      quantity:
+        type: number
+    type: object
+  models.FeedingRecordReq:
+    properties:
+      animal_id:
+        type: string
+      fed_at:
+        type: string
+      food_id:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      quantity:
+        type: number
+    required:
+    - animal_id
+    - fed_at
+    - food_id
+    - quantity
+    type: object
+  models.FeedingRecordResp:
+    properties:
+      feeding_record:
+        $ref: '#/definitions/models.FeedingRecordWithoutTime'
+      message:
+        type: string
+    type: object
+  models.FeedingRecordWithoutTime:
+    properties:
+      animal_id:
+        type: string
+      fed_at:
+        type: string
+      food_id:
+        type: string
+      id:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      quantity:
+        type: number
+    required:
+    - animal_id
+    - fed_at
+    - food_id
+    - quantity
+    type: object
   models.Food:
     properties:
       created_at:
@@ -177,6 +254,19 @@ definitions:
     - quantity
     - suitable_for
     - unit_of_measure
+    type: object
+  models.FoodDetail:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
     type: object
   models.FoodWithoutTime:
     properties:
@@ -396,6 +486,19 @@ definitions:
         $ref: '#/definitions/models.UpdateFarmRequest'
       message:
         type: string
+    type: object
+  models.UpdateFeedRecordReq:
+    properties:
+      fed_at:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      quantity:
+        type: number
+    required:
+    - fed_at
+    - quantity
     type: object
   models.UpdateFoodReq:
     properties:
@@ -871,6 +974,173 @@ paths:
       summary: Update a farm
       tags:
       - farms
+  /feeding_records:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Feeding Record request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.FeedingRecordReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.FeedingRecordResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create a new feeding record
+      tags:
+      - feeding_records
+  /feeding_records/{id}:
+    delete:
+      parameters:
+      - description: Feeding Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete a feeding record by its ID
+      tags:
+      - feeding_records
+    get:
+      parameters:
+      - description: Feeding Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FeedingRecordDetailed'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get a feeding record by its ID
+      tags:
+      - feeding_records
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Feeding Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Feeding Record Input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateFeedRecordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update a feeding record by its ID
+      tags:
+      - feeding_records
+  /feeding_records/animal/{animal_id}:
+    get:
+      parameters:
+      - description: Animal ID
+        in: path
+        name: animal_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.FeedingRecordDetailed'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get all feeding records for a specific animal
+      tags:
+      - feeding_records
   /foods:
     post:
       consumes:
