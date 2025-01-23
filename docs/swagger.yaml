@@ -312,6 +312,70 @@ definitions:
       user_id:
         type: string
     type: object
+  models.MedicalRecordDetailed:
+    properties:
+      animal:
+        $ref: '#/definitions/models.AnimalDetail'
+      created_at:
+        type: string
+      id:
+        type: string
+      medicine:
+        $ref: '#/definitions/models.MedicineDetail'
+      notes:
+        type: string
+      quantity:
+        type: number
+      treatment_date:
+        type: string
+    type: object
+  models.MedicalRecordReq:
+    properties:
+      animal_id:
+        type: string
+      medicine_id:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      quantity:
+        type: number
+      treatment_date:
+        type: string
+    required:
+    - animal_id
+    - medicine_id
+    - quantity
+    - treatment_date
+    type: object
+  models.MedicalRecordResp:
+    properties:
+      medical_record:
+        $ref: '#/definitions/models.MedicalRecordWithoutTime'
+      message:
+        type: string
+    type: object
+  models.MedicalRecordWithoutTime:
+    properties:
+      animal_id:
+        type: string
+      id:
+        type: string
+      medicine_id:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      quantity:
+        type: number
+      treatment_date:
+        type: string
+    required:
+    - animal_id
+    - medicine_id
+    - quantity
+    - treatment_date
+    type: object
   models.Medicine:
     properties:
       created_at:
@@ -341,6 +405,19 @@ definitions:
     - quantity
     - suitable_for
     - unit_of_measure
+    type: object
+  models.MedicineDetail:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      suitable_for:
+        items:
+          type: string
+        type: array
+      unit_of_measure:
+        type: string
     type: object
   models.MedicineReq:
     properties:
@@ -533,6 +610,19 @@ definitions:
         $ref: '#/definitions/models.UpdateFoodReq'
       message:
         type: string
+    type: object
+  models.UpdateMedicalRecordReq:
+    properties:
+      notes:
+        maxLength: 500
+        type: string
+      quantity:
+        type: number
+      treatment_date:
+        type: string
+    required:
+    - quantity
+    - treatment_date
     type: object
   models.UpdateUser:
     properties:
@@ -1297,6 +1387,173 @@ paths:
       summary: Get a food by ID
       tags:
       - foods
+  /medical_records:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Medical Record
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.MedicalRecordReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created successfully
+          schema:
+            $ref: '#/definitions/models.MedicalRecordResp'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Animal or Medicine Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Create a new medical record
+      tags:
+      - medical_records
+  /medical_records/{id}:
+    delete:
+      parameters:
+      - description: Medical Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deleted successfully
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Invalid record ID
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Delete a medical record by ID
+      tags:
+      - medical_records
+    get:
+      parameters:
+      - description: Medical Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MedicalRecordDetailed'
+        "400":
+          description: Invalid record ID
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get a medical record by ID
+      tags:
+      - medical_records
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Medical Record ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Medical Record
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateMedicalRecordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated successfully
+          schema:
+            $ref: '#/definitions/models.MessageResp'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Update a medical record
+      tags:
+      - medical_records
+  /medical_records/animals/{animal_id}:
+    get:
+      parameters:
+      - description: Animal ID
+        in: path
+        name: animal_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MedicalRecordDetailed'
+            type: array
+        "400":
+          description: Invalid animal ID
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrResp'
+      security:
+      - BearerAuth: []
+      summary: Get medical records by Animal ID
+      tags:
+      - medical_records
   /medicines:
     get:
       description: Retrieve all medicines for a specific farm

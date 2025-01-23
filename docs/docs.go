@@ -1107,6 +1107,271 @@ const docTemplate = `{
                 }
             }
         },
+        "/medical_records": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medical_records"
+                ],
+                "summary": "Create a new medical record",
+                "parameters": [
+                    {
+                        "description": "Medical Record",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MedicalRecordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.MedicalRecordResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Animal or Medicine Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/medical_records/animals/{animal_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medical_records"
+                ],
+                "summary": "Get medical records by Animal ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Animal ID",
+                        "name": "animal_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MedicalRecordDetailed"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid animal ID",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/medical_records/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medical_records"
+                ],
+                "summary": "Get a medical record by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Medical Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.MedicalRecordDetailed"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid record ID",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medical_records"
+                ],
+                "summary": "Update a medical record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Medical Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Medical Record",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateMedicalRecordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "medical_records"
+                ],
+                "summary": "Delete a medical record by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Medical Record ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid record ID",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrResp"
+                        }
+                    }
+                }
+            }
+        },
         "/medicines": {
             "get": {
                 "security": [
@@ -2016,6 +2281,100 @@ const docTemplate = `{
                 }
             }
         },
+        "models.MedicalRecordDetailed": {
+            "type": "object",
+            "properties": {
+                "animal": {
+                    "$ref": "#/definitions/models.AnimalDetail"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "medicine": {
+                    "$ref": "#/definitions/models.MedicineDetail"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "treatment_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MedicalRecordReq": {
+            "type": "object",
+            "required": [
+                "animal_id",
+                "medicine_id",
+                "quantity",
+                "treatment_date"
+            ],
+            "properties": {
+                "animal_id": {
+                    "type": "string"
+                },
+                "medicine_id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "treatment_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MedicalRecordResp": {
+            "type": "object",
+            "properties": {
+                "medical_record": {
+                    "$ref": "#/definitions/models.MedicalRecordWithoutTime"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MedicalRecordWithoutTime": {
+            "type": "object",
+            "required": [
+                "animal_id",
+                "medicine_id",
+                "quantity",
+                "treatment_date"
+            ],
+            "properties": {
+                "animal_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "medicine_id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "treatment_date": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Medicine": {
             "type": "object",
             "required": [
@@ -2055,6 +2414,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MedicineDetail": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "suitable_for": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "unit_of_measure": {
                     "type": "string"
                 }
             }
@@ -2334,6 +2713,25 @@ const docTemplate = `{
                     "$ref": "#/definitions/models.UpdateFoodReq"
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateMedicalRecordReq": {
+            "type": "object",
+            "required": [
+                "quantity",
+                "treatment_date"
+            ],
+            "properties": {
+                "notes": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "treatment_date": {
                     "type": "string"
                 }
             }

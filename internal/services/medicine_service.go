@@ -19,7 +19,7 @@ func NewMedicineService(repo *repository.MedicineRepository) *MedicineService {
 
 var (
 	ErrQuantityLessThanThreshold = errors.New("quantity cannot be less than the minimum threshold")
-	ErrNotExist                  = errors.New("medicine with this ID not found")
+	ErrMedicineNotExist          = errors.New("medicine with this ID not found")
 )
 
 func (s *MedicineService) CreateMedicine(medicine *models.MedicineWithoutTime) error {
@@ -45,7 +45,7 @@ func (s *MedicineService) UpdateMedicine(medicine *models.MedicineWithoutTime) e
 		return fmt.Errorf("failed to fetch existing medicine: %v", err)
 	}
 	if existing == nil {
-		return ErrNotExist
+		return ErrMedicineNotExist
 	}
 
 	if medicine.Quantity < medicine.MinThreshold {
@@ -61,7 +61,7 @@ func (s *MedicineService) DeleteMedicine(id uuid.UUID) error {
 		return fmt.Errorf("failed to fetch existing medicine: %v", err)
 	}
 	if existing == nil {
-		return ErrNotExist
+		return ErrMedicineNotExist
 	}
 
 	return s.repo.DeleteMedicine(id)

@@ -17,15 +17,17 @@ func main() {
 
 	animalRepo := repository.NewAnimalRepository(db)
 	foodRepo := repository.NewFoodRepository(db)
+	medicineRepo := repository.NewMedicineRepository(db)
 
 	userService := services.NewUserService(repository.NewUserRepository(db))
 	farmService := services.NewFarmService(repository.NewFarmRepository(db))
 	animalService := services.NewAnimalService(animalRepo)
 	foodService := services.NewFoodService(foodRepo)
-	medicineService := services.NewMedicineService(repository.NewMedicineRepository(db))
+	medicineService := services.NewMedicineService(medicineRepo)
 	feedingRecordService := services.NewFeedingRecordService(repository.NewFeedingRecordRepository(db), animalRepo, foodRepo)
+	medicalRecordService := services.NewMedicalRecordService(repository.NewMedicalRecordRepository(db), animalRepo, medicineRepo)
 
-	h := handlers.NewHandler(userService, farmService, animalService, foodService, medicineService, feedingRecordService)
+	h := handlers.NewHandler(userService, farmService, animalService, foodService, medicineService, feedingRecordService, medicalRecordService)
 
 	r := handlers.Run(h)
 

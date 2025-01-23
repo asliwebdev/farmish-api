@@ -17,12 +17,14 @@ type Handler struct {
 	foodService          *services.FoodService
 	medicineService      *services.MedicineService
 	feedingRecordService *services.FeedingRecordService
+	medicalRecordService *services.MedicalRecordService
 }
 
 func NewHandler(userService *services.UserService, farmService *services.FarmService,
 	animalService *services.AnimalService,
 	foodService *services.FoodService, medicineService *services.MedicineService,
 	feedingRecordService *services.FeedingRecordService,
+	medicalRecordService *services.MedicalRecordService,
 ) *Handler {
 	return &Handler{
 		userService:          userService,
@@ -31,6 +33,7 @@ func NewHandler(userService *services.UserService, farmService *services.FarmSer
 		foodService:          foodService,
 		medicineService:      medicineService,
 		feedingRecordService: feedingRecordService,
+		medicalRecordService: medicalRecordService,
 	}
 }
 
@@ -112,7 +115,7 @@ func Run(h *Handler) *gin.Engine {
 		medicineRoutes.DELETE("/:id", h.DeleteMedicine)
 	}
 
-	// FEEDING-RECORD ROUTES
+	// FEEDING RECORD ROUTES
 	feedingRecordRoutes := router.Group("/feeding_records")
 	{
 		feedingRecordRoutes.POST("/", h.CreateFeedingRecord)
@@ -120,6 +123,16 @@ func Run(h *Handler) *gin.Engine {
 		feedingRecordRoutes.GET("/animal/:animal_id", h.GetFeedingRecordsByAnimalID)
 		feedingRecordRoutes.PUT("/:id", h.UpdateFeedingRecord)
 		feedingRecordRoutes.DELETE("/:id", h.DeleteFeedingRecord)
+	}
+
+	// MEDICAL RECORD ROUTES
+	medicalRecords := router.Group("/medical_records")
+	{
+		medicalRecords.POST("", h.CreateMedicalRecord)
+		medicalRecords.GET("/:id", h.GetMedicalRecordByID)
+		medicalRecords.GET("/animals/:animal_id", h.GetMedicalRecordsByAnimalID)
+		medicalRecords.PUT("/:id", h.UpdateMedicalRecord)
+		medicalRecords.DELETE("/:id", h.DeleteMedicalRecord)
 	}
 
 	return router

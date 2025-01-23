@@ -123,8 +123,8 @@ func (h *Handler) UpdateMedicine(c *gin.Context) {
 	medicine.ID = id
 
 	if err := h.medicineService.UpdateMedicine(&medicine); err != nil {
-		if err == services.ErrNotExist {
-			c.JSON(http.StatusNotFound, gin.H{"error": services.ErrNotExist})
+		if err == services.ErrMedicineNotExist {
+			c.JSON(http.StatusNotFound, gin.H{"error": services.ErrMedicineNotExist})
 		} else if err == services.ErrQuantityLessThanThreshold {
 			c.JSON(http.StatusBadRequest, gin.H{"error": services.ErrQuantityLessThanThreshold})
 		} else {
@@ -154,8 +154,8 @@ func (h *Handler) DeleteMedicine(c *gin.Context) {
 	}
 
 	if err := h.medicineService.DeleteMedicine(id); err != nil {
-		if err == services.ErrNotExist {
-			c.JSON(http.StatusNotFound, gin.H{"error": services.ErrNotExist})
+		if err == services.ErrMedicineNotExist {
+			c.JSON(http.StatusNotFound, gin.H{"error": services.ErrMedicineNotExist})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
